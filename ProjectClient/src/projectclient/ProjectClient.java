@@ -5,13 +5,10 @@
  */
 package projectclient;
 
-import java.io.File;
-import java.net.URL;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,7 +16,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
@@ -30,16 +26,6 @@ public class ProjectClient extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
-
         GridPane root = new GridPane();
 
         Label companyName = new Label("ALSET");
@@ -61,7 +47,7 @@ public class ProjectClient extends Application {
         distanceInput.getStyleClass().add("InputFields");
         GridPane.setConstraints(distanceInput, 2, 3);
         GridPane.setHalignment(distanceInput, HPos.CENTER);
-        
+
         Label distanceUnitLabel = new Label(" Miles");
         distanceUnitLabel.getStyleClass().add("InputLabels");
         GridPane.setConstraints(distanceUnitLabel, 3, 3);
@@ -76,29 +62,39 @@ public class ProjectClient extends Application {
         distanceInput.getStyleClass().add("InputFields");
         GridPane.setConstraints(fuelEffieciencyInput, 2, 4);
         GridPane.setHalignment(fuelEffieciencyInput, HPos.CENTER);
-        
+
         Label fuelUnitLabel = new Label(" Miles per Gallon (MPG)");
         fuelUnitLabel.getStyleClass().add("InputLabels");
         GridPane.setConstraints(fuelUnitLabel, 3, 4);
         GridPane.setHalignment(fuelUnitLabel, HPos.LEFT);
-        
+
         Label fuelTypeLabel = new Label("Fuel Type: ");
         fuelTypeLabel.getStyleClass().add("InputLabels");
         GridPane.setConstraints(fuelTypeLabel, 1, 5);
         GridPane.setHalignment(fuelTypeLabel, HPos.RIGHT);
-        
+
         final ToggleGroup fuelType = new ToggleGroup();
-        
+
         RadioButton Octane = new RadioButton("98 Octane");
         Octane.setToggleGroup(fuelType);
         Octane.setSelected(true);
         GridPane.setConstraints(Octane, 2, 5);
-        
+
         RadioButton Diesel = new RadioButton("Diesel");
         Diesel.setToggleGroup(fuelType);
         GridPane.setConstraints(Diesel, 2, 6);
 
-        root.getChildren().addAll(companyName, programDescription, distanceLabel, distanceInput,distanceUnitLabel,fuelEffieciencyLabel,fuelEffieciencyInput,fuelUnitLabel,fuelTypeLabel,Octane,Diesel);
+        Button calculate = new Button("Calculate");
+        calculate.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+//                ClientCalculation values = ClientCalculation(distanceInput.getText(),fuelEffieciencyInput.getText());
+            }
+        });
+        GridPane.setConstraints(calculate, 2, 7);
+
+        root.getChildren().addAll(companyName, programDescription, distanceLabel, distanceInput, distanceUnitLabel, fuelEffieciencyLabel, fuelEffieciencyInput, fuelUnitLabel, fuelTypeLabel, Octane, Diesel,calculate);
 
         Scene scene = new Scene(root, 600, 550);
 

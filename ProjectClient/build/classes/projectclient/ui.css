@@ -21,7 +21,7 @@ and open the template in the editor.
 .InputLabels{
     -fx-font-size: 18px;
 /*    -fx-text-alignment:left;*/
-    -fx-padding: 10 0 0 10;
+    -fx-padding: 0 0 0 10;
 }
 .InputFields{
     -fx-font-size: 18px;
