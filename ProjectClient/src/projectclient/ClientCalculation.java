@@ -11,18 +11,23 @@ package projectclient;
  */
 public class ClientCalculation {
 
-    private final double distance;
-    private final double efficiency;
-    private final double litterPrice;
+    private double distance;
+    private double efficiency;
+    private double litterPrice;
     private double tripCost;
 
-    ClientCalculation(double distance, double efficiency, double litterPrice) {
+    ClientCalculation(double distance, double efficiency, String litterPrice) {
         this.distance = distance;
         this.efficiency = efficiency;
-        this.litterPrice = litterPrice;
+        if (litterPrice.equals("98 Octane")) {
+            this.litterPrice = 1.03;
+        } else {
+            this.litterPrice = 1.05;
+        }
+        calculateCost();
     }
 
-    public void calculateCost() {
+    private void calculateCost() {
         this.tripCost = (this.distance / this.efficiency) * this.litterPrice;
     }
 

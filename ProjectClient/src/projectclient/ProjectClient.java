@@ -9,10 +9,14 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
@@ -59,7 +63,7 @@ public class ProjectClient extends Application {
         GridPane.setHalignment(fuelEffieciencyLabel, HPos.RIGHT);
 
         TextField fuelEffieciencyInput = new TextField();
-        distanceInput.getStyleClass().add("InputFields");
+        fuelEffieciencyInput.getStyleClass().add("InputFields");
         GridPane.setConstraints(fuelEffieciencyInput, 2, 4);
         GridPane.setHalignment(fuelEffieciencyInput, HPos.CENTER);
 
@@ -78,31 +82,50 @@ public class ProjectClient extends Application {
         RadioButton Octane = new RadioButton("98 Octane");
         Octane.setToggleGroup(fuelType);
         Octane.setSelected(true);
+        GridPane.setMargin(Octane, new Insets(0,0,0,10));
         GridPane.setConstraints(Octane, 2, 5);
 
         RadioButton Diesel = new RadioButton("Diesel");
         Diesel.setToggleGroup(fuelType);
-        GridPane.setConstraints(Diesel, 2, 6);
+        GridPane.setMargin(Diesel, new Insets(0,0,0,-450));
+        GridPane.setConstraints(Diesel, 3, 5);
+
+        TextArea Results = new TextArea();
+        Results.setEditable(false);
+
+        GridPane.setConstraints(Results, 2, 8);
+        
 
         Button calculate = new Button("Calculate");
-        calculate.setOnAction(new EventHandler<ActionEvent>() {
+        calculate.getStyleClass().add("CalculateButton");
+        GridPane.setMargin(calculate, new Insets(10,0,10,0));
+        
 
+        
+        calculate.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-//                ClientCalculation values = ClientCalculation(distanceInput.getText(),fuelEffieciencyInput.getText());
+                try {
+                    ClientCalculation values = new ClientCalculation(Double.parseDouble(distanceInput.getText()), Double.parseDouble(fuelEffieciencyInput.getText()), fuelType.getSelectedToggle().toString().split("'")[1]);
+                    Results.setText(Results.getText() + "£" + (String.format("%.2f",values.getCost())) + "\n");
+                } catch (NumberFormatException ex) {
+//                    Results.setText(Results.getText() + "Please Enter Only Numbers! " + "\n");
+                    Alert expectionAlert = new Alert(AlertType.ERROR,"Please Enter Only Numbers!");
+                    expectionAlert.showAndWait();
+                }
             }
         });
         GridPane.setConstraints(calculate, 2, 7);
+        root.getChildren().addAll(companyName, programDescription, distanceLabel, distanceInput, distanceUnitLabel, fuelEffieciencyLabel, fuelEffieciencyInput, fuelUnitLabel, fuelTypeLabel, Octane, Diesel, calculate, Results);
 
-        root.getChildren().addAll(companyName, programDescription, distanceLabel, distanceInput, distanceUnitLabel, fuelEffieciencyLabel, fuelEffieciencyInput, fuelUnitLabel, fuelTypeLabel, Octane, Diesel,calculate);
-
-        Scene scene = new Scene(root, 600, 550);
-
+        Scene scene = new Scene(root, 1000, 600);
+        
         root.getStylesheets().add(getClass().getResource("ui.css").toString());
-
+        
         primaryStage.setTitle("ALSET Fuel Calculator");
         primaryStage.setScene(scene);
         primaryStage.show();
+
     }
 
     /**
