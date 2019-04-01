@@ -78,7 +78,7 @@ public class ProjectClient extends Application {
         GridPane.setHalignment(distanceInput, HPos.CENTER);
 
         // Declare new label for distanceUnitLabel & Give Text 'Miles'
-        Label distanceUnitLabel = new Label(" Miles");
+        Label distanceUnitLabel = new Label("Miles");
         // Give CSS Properties with Class .InputLabels to distanceUnitLabel Label 
         distanceUnitLabel.getStyleClass().add("InputLabels");
         // Give Row 3 & Column 3 to distanceUnitLabel Label via GridPane
@@ -141,7 +141,7 @@ public class ProjectClient extends Application {
         // Assign RadioButton Diesel to ToggleGroup fuelType so only one RadioButton can be selected
         Diesel.setToggleGroup(fuelType);
         // Instruct GridPane to Give Margins to Diesel
-        GridPane.setMargin(Diesel, new Insets(0, 0, 0, -450));
+        GridPane.setMargin(Diesel, new Insets(0, 0, 0, -300));
         // Give Row 5 & Column 3 to Octane RadioButton via GridPane
         GridPane.setConstraints(Diesel, 3, 5);
 
@@ -159,8 +159,7 @@ public class ProjectClient extends Application {
         // Instruct GridPane to Give Margins to Calculate
         GridPane.setMargin(calculate, new Insets(10, 0, 10, 0));
         // Give Row 8 & Column 2 to TextArea 'Calculate' via GridPane
-        GridPane.setConstraints(calculate, 2, 8);
-
+        GridPane.setConstraints(calculate, 2, 7);
         // Calculate onClick EventHandler
         calculate.setOnAction(new EventHandler<ActionEvent>() {
             // Override Default Handle ActionEvent
@@ -175,26 +174,37 @@ public class ProjectClient extends Application {
                      */
                     ClientCalculation values = new ClientCalculation(Double.parseDouble(distanceInput.getText()), Double.parseDouble(fuelEffieciencyInput.getText()), fuelType.getSelectedToggle().toString().split("'")[1]);
                     // Adds New Result in 'Results' TextField with 2 Decimal Points Rounding.
-                    Results.setText(Results.getText() + "£" + (String.format("%.2f", values.getCost())) + "\n");
-                    
+                    // Results.setText(Results.getText() + "£" + (String.format("%.2f", values.getCost())) + "\n");
+
                     // Optional AlertBox for Results
-                    // Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION, "£" + (String.format("%.2f", values.getCost())));
-                    // calulcatedResponse.showAndWait();
+                    Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION, "£" + (String.format("%.2f", values.getCost())));
+                    calulcatedResponse.showAndWait();
                 } catch (NumberFormatException ex) {
-                    // Runs this section when there is a NumberFormatException
+                    // This section is excuted when there is a NumberFormatException
 
                     // Optional: Set Error Information in Results TextField
                     // Results.setText(Results.getText() + "Please Enter Only Numbers! " + "\n");
                     // Define Error Alert Box
-                    Alert expectionAlert = new Alert(AlertType.ERROR, "Dear User, Please Enter Only Numbers!");
+                    Alert expectionAlert = new Alert(AlertType.ERROR, "Dear User, Please Enter Numbers!");
                     // Shows Error Alert Box & Waits for User Dismissal
                     expectionAlert.showAndWait();
+                } catch (NullPointerException exp) {
+                    // This section is excuted when there is a NullPointerException
+
+                    // Define Error Alert Box
+                    Alert nullPointerAlert = new Alert(AlertType.ERROR, "Dear User, Please select the fuel type!");
+
+                    // Shows Error Alert Box & Waits for User Dismissal
+                    nullPointerAlert.showAndWait();
+
                 }
             }
         });
 
         // Add Elements / Objects for Display in GridPane
-        root.getChildren().addAll(companyName, programDescription, distanceLabel, distanceInput, distanceUnitLabel, fuelEffieciencyLabel, fuelEffieciencyInput, fuelUnitLabel, fuelTypeLabel, Octane, Diesel, calculate, Results);
+        root.getChildren().addAll(companyName, programDescription, distanceLabel,
+                distanceInput, distanceUnitLabel, fuelEffieciencyLabel, fuelEffieciencyInput,
+                fuelUnitLabel, fuelTypeLabel, Octane, Diesel, calculate);
 
         // Define Scene & Screen Dimensions
         Scene scene = new Scene(root, 1000, 600);
