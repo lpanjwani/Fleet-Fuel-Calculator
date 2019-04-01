@@ -26,6 +26,8 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -141,7 +143,7 @@ public class ProjectClient extends Application {
         // Assign RadioButton Diesel to ToggleGroup fuelType so only one RadioButton can be selected
         Diesel.setToggleGroup(fuelType);
         // Instruct GridPane to Give Margins to Diesel
-        GridPane.setMargin(Diesel, new Insets(0, 0, 0, -300));
+        GridPane.setMargin(Diesel, new Insets(0, 0, 0, -100));
         // Give Row 5 & Column 3 to Octane RadioButton via GridPane
         GridPane.setConstraints(Diesel, 3, 5);
 
@@ -151,6 +153,8 @@ public class ProjectClient extends Application {
         Results.setEditable(false);
         // Give Row 8 & Column 2 to TextArea 'Results' via GridPane
         GridPane.setConstraints(Results, 2, 8);
+        // Set Results Height & Width
+        Results.setPrefSize(75, 150);
 
         // Decleare Button 'Calculate'
         Button calculate = new Button("Calculate");
@@ -173,11 +177,19 @@ public class ProjectClient extends Application {
                      * Input 3 - Fuel Choice: (String) Retrieves Value from RadioButton
                      */
                     ClientCalculation values = new ClientCalculation(Double.parseDouble(distanceInput.getText()), Double.parseDouble(fuelEffieciencyInput.getText()), fuelType.getSelectedToggle().toString().split("'")[1]);
+                    
+                    String display = "Trip Distance: " + distanceInput.getText() + " Miles \n"
+                            + "Car’s fuel efficiency: " + fuelEffieciencyInput.getText() + " MPG \n"
+                            + "Cost of fuel per litter: £" + values.getLitterPrice() + "\n"
+                            + "Fuel Cost: £" + (String.format("%.2f", values.getCost()));
+
                     // Adds New Result in 'Results' TextField with 2 Decimal Points Rounding.
-                    // Results.setText(Results.getText() + "£" + (String.format("%.2f", values.getCost())) + "\n");
+                    Results.setText(display);
 
                     // Optional AlertBox for Results
-                    Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION, "£" + (String.format("%.2f", values.getCost())));
+                    Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION,display);
+                    
+                    // Show Response to User & Await Dismissal
                     calulcatedResponse.showAndWait();
                 } catch (NumberFormatException ex) {
                     // This section is excuted when there is a NumberFormatException
@@ -204,10 +216,11 @@ public class ProjectClient extends Application {
         // Add Elements / Objects for Display in GridPane
         root.getChildren().addAll(companyName, programDescription, distanceLabel,
                 distanceInput, distanceUnitLabel, fuelEffieciencyLabel, fuelEffieciencyInput,
-                fuelUnitLabel, fuelTypeLabel, Octane, Diesel, calculate);
+                fuelUnitLabel, fuelTypeLabel, Octane, Diesel, calculate, Results);
 
         // Define Scene & Screen Dimensions
-        Scene scene = new Scene(root, 1000, 600);
+        // Scene scene = new Scene(root, 1000, 600);
+        Scene scene = new Scene(root, 570, 500);
 
         // Get CSS File & Parse
         root.getStylesheets().add(getClass().getResource("ui.css").toString());
