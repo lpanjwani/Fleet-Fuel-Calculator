@@ -10,7 +10,8 @@
 }
 .programDescription{
     -fx-font-size: 25px;
-    -fx-padding: 0 0 40 200;
+/*    -fx-padding: 0 0 40 200;*/
+    -fx-padding: 0 0 40 0;
 }
 .InputLabels{
     -fx-font-size: 18px;
@@ -22,6 +23,10 @@
 }
 .CalculateButton{
 /*    -fx-padding: 4 0 20 20;*/
+}
+.TextArea{
+   text-area-background: #38eeff ;    
+   -fx-background-color: #38eeff;
 }
 .root   
 {  
