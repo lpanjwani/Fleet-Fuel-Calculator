@@ -192,7 +192,7 @@ public class ProjectClient extends Application {
                     Alert expectionAlert = new Alert(AlertType.ERROR, "Dear User, Please Enter Numbers!");
                     // Shows Error Alert Box & Waits for User Dismissal
                     expectionAlert.showAndWait();
-                } catch (NullPointerException exp) {
+                } catch (NullPointerException ex) {
                     // This section is excuted when there is a NullPointerException
 
                     // Define Error Alert Box
@@ -202,9 +202,21 @@ public class ProjectClient extends Application {
                     nullPointerAlert.showAndWait();
 
                 } catch (FileNotFoundException ex) {
-                    Logger.getLogger(ProjectClient.class.getName()).log(Level.SEVERE, null, ex);
+                    // This section is excuted when there is a FileNotFoundException
+
+                    // Define Error Alert Box
+                    Alert fileNotFoundAlert = new Alert(AlertType.ERROR, "Dear User, Input File was not found! Please make sure it exists.");
+
+                    // Shows Error Alert Box & Waits for User Dismissal
+                    fileNotFoundAlert.showAndWait();
                 } catch (IOException ex) {
-                    Logger.getLogger(ProjectClient.class.getName()).log(Level.SEVERE, null, ex);
+                    // This section is excuted when there is a Input Output Exception
+
+                    // Define Error Alert Box
+                    Alert ioErrorAlert = new Alert(AlertType.ERROR, "Dear User, Please Close Other Programs.");
+
+                    // Shows Error Alert Box & Waits for User Dismissal
+                    ioErrorAlert.showAndWait();
                 }
             }
         });
