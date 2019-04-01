@@ -181,7 +181,7 @@ public class ProjectClient extends Application {
                      * Input 3 - Fuel Choice: (String) Retrieves Value from RadioButton
                      */
                     ClientCalculation values = new ClientCalculation(Double.parseDouble(distanceInput.getText()), Double.parseDouble(fuelEffieciencyInput.getText()), fuelType.getSelectedToggle().toString().split("'")[1]);
-                    
+
                     String display = "Trip Distance: " + distanceInput.getText() + " Miles \n"
                             + "Car’s fuel efficiency: " + fuelEffieciencyInput.getText() + " MPG \n"
                             + "Cost of fuel per litter: £" + values.getLitterPrice() + "\n"
@@ -191,8 +191,8 @@ public class ProjectClient extends Application {
                     Results.setText(display);
 
                     // Optional AlertBox for Results
-                    Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION,display);
-                    
+                    Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION, display);
+
                     // Show Response to User & Await Dismissal
                     calulcatedResponse.showAndWait();
                 } catch (NumberFormatException ex) {
