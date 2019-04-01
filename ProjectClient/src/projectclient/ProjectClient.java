@@ -12,6 +12,10 @@
 package projectclient;
 
 // Import Java Libaries
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -197,6 +201,10 @@ public class ProjectClient extends Application {
                     // Shows Error Alert Box & Waits for User Dismissal
                     nullPointerAlert.showAndWait();
 
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(ProjectClient.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ProjectClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

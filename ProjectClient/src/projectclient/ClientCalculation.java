@@ -5,6 +5,13 @@
  */
 package projectclient;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  *
  * @author Lavesh
@@ -17,7 +24,29 @@ public class ClientCalculation {
     private double tripCost;
 
     // Constructor with Distance (Double), Fuel Efficiency (Double) & Price of Litter (String)
-    ClientCalculation(double distance, double efficiency, String litterPrice) {
+    ClientCalculation(double distance, double efficiency, String fuelType) throws FileNotFoundException, IOException {
+
+        // Decleare Input File Location
+        FileReader inputFile = new FileReader("input.csv");
+        // Input Retrieving Process
+        BufferedReader input = new BufferedReader(inputFile);
+
+        // Decleare String so it can take a new value everytime Constructor is called.
+        String line;
+
+        // While Loop to Gets Each Line
+        while ((line = input.readLine()) != null) {
+            // Converts cell Information into an Array position when comma is detected.
+            String[] rowValues = line.split(",");
+            // Cross Checks to find Selected Fuel Type by User & CSV Match.
+            if (rowValues[0].equals(fuelType)) {
+                // Stores the Price of a Litter
+                this.litterPrice = Double.parseDouble(rowValues[1]);
+            }
+        }
+
+        // Close File Reading Function
+        input.close();
 
         // Sets Distance, based recieved values from parameter
         this.distance = distance;
@@ -25,19 +54,28 @@ public class ClientCalculation {
         // Sets Efficiency, based recieved values from parameter
         this.efficiency = efficiency;
 
-        // Sets litterPrice, based recieved String Value from parameter
-        if (litterPrice.equals("98 Octane")) {
-            this.litterPrice = 1.03;
-        } else {
-            this.litterPrice = 1.05;
-        }
         // Automatically Calculates Costs
         calculateCost();
     }
 
     // Calculates Cost of Trip
-    private void calculateCost() {
+    private void calculateCost() throws IOException {
+        // Mathematical Formula to Calulcate Cost of Trip
         this.tripCost = (this.distance / this.efficiency) * this.litterPrice;
+
+        // Decleare Output File Location
+        FileWriter outputFile = new FileWriter("output.csv", true);
+
+        // Output Writing Process
+        BufferedWriter output = new BufferedWriter(outputFile);
+
+        // Write Values in CSV
+        output.write(this.distance + "," + this.efficiency + "," + this.litterPrice + ","
+                + Double.toString(this.tripCost) + "\n");
+
+        // Close Writer Process
+        output.close();
+
     }
 
     // Sends Back Distance
