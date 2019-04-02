@@ -195,13 +195,13 @@ public class ProjectClient extends Application {
 
                     // Show Response to User & Await Dismissal
                     calulcatedResponse.showAndWait();
-                } catch (NumberFormatException ex) {
+                } catch (NumberFormatException | ArithmeticException ex) {
                     // This section is excuted when there is a NumberFormatException
 
                     // Optional: Set Error Information in Results TextField
                     // Results.setText(Results.getText() + "Please Enter Only Numbers! " + "\n");
                     // Define Error Alert Box
-                    Alert expectionAlert = new Alert(AlertType.ERROR, "Dear User, Please Enter Numbers!");
+                    Alert expectionAlert = new Alert(AlertType.ERROR, "Dear User, Please Enter Numbers & Make Sure They are Correct!");
                     // Shows Error Alert Box & Waits for User Dismissal
                     expectionAlert.showAndWait();
                 } catch (NullPointerException ex) {

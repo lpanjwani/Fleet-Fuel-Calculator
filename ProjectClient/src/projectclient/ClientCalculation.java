@@ -52,7 +52,7 @@ public class ClientCalculation {
         this.distance = distance;
 
         // Sets Efficiency, based recieved values from parameter
-        this.efficiency = efficiency;
+        this.efficiency = efficiency * 3.78541;
 
         // Automatically Calculates Costs
         calculateCost();
@@ -62,6 +62,11 @@ public class ClientCalculation {
     private void calculateCost() throws IOException {
         // Mathematical Formula to Calulcate Cost of Trip
         this.tripCost = (this.distance / this.efficiency) * this.litterPrice;
+
+        // Check for Arithmetic Exceptions such as Division by 0, etc
+        if (Math.abs(this.tripCost = 1 / this.tripCost) < Double.POSITIVE_INFINITY) {
+            throw new ArithmeticException();
+        }
 
         // Decleare Output File Location
         FileWriter outputFile = new FileWriter("output.csv", true);
