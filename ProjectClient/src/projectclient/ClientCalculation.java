@@ -38,6 +38,9 @@ public class ClientCalculation {
     // Calculates Cost of Trip
     private void calculateCost() {
         this.tripCost = (this.distance / this.efficiency) * this.litterPrice;
+        if (Math.abs(this.tripCost = 1 / this.tripCost) < Double.POSITIVE_INFINITY) {
+            throw new ArithmeticException();
+        }
     }
 
     // Sends Back Distance

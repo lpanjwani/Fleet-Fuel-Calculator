@@ -177,7 +177,7 @@ public class ProjectClient extends Application {
                      * Input 3 - Fuel Choice: (String) Retrieves Value from RadioButton
                      */
                     ClientCalculation values = new ClientCalculation(Double.parseDouble(distanceInput.getText()), Double.parseDouble(fuelEffieciencyInput.getText()), fuelType.getSelectedToggle().toString().split("'")[1]);
-                    
+
                     String display = "Trip Distance: " + distanceInput.getText() + " Miles \n"
                             + "Car’s fuel efficiency: " + fuelEffieciencyInput.getText() + " MPG \n"
                             + "Cost of fuel per litter: £" + values.getLitterPrice() + "\n"
@@ -187,17 +187,17 @@ public class ProjectClient extends Application {
                     Results.setText(display);
 
                     // Optional AlertBox for Results
-                    Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION,display);
-                    
+                    Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION, display);
+
                     // Show Response to User & Await Dismissal
                     calulcatedResponse.showAndWait();
-                } catch (NumberFormatException ex) {
+                } catch (NumberFormatException | ArithmeticException ex) {
                     // This section is excuted when there is a NumberFormatException
 
                     // Optional: Set Error Information in Results TextField
                     // Results.setText(Results.getText() + "Please Enter Only Numbers! " + "\n");
                     // Define Error Alert Box
-                    Alert expectionAlert = new Alert(AlertType.ERROR, "Dear User, Please Enter Numbers!");
+                    Alert expectionAlert = new Alert(AlertType.ERROR, "Dear User, Please Enter Numbers & Make Sure They are Correct!");
                     // Shows Error Alert Box & Waits for User Dismissal
                     expectionAlert.showAndWait();
                 } catch (NullPointerException exp) {
