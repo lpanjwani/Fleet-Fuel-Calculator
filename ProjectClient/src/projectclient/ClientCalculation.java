@@ -23,7 +23,7 @@ public class ClientCalculation {
         this.distance = distance;
 
         // Sets Efficiency, based recieved values from parameter
-        this.efficiency = efficiency;
+        this.efficiency = efficiency * 3.78541;
 
         // Sets litterPrice, based recieved String Value from parameter
         if (litterPrice.equals("98 Octane")) {
