@@ -192,7 +192,7 @@ public class ProjectClient extends Application {
                     // Show Response to User & Await Dismissal
                     calulcatedResponse.showAndWait();
                 } catch (NumberFormatException | ArithmeticException ex) {
-                    // This section is excuted when there is a NumberFormatException
+                    // This section is excuted when there is a NumberFormatException or ArithmeticException such as division by 0,etc
 
                     // Optional: Set Error Information in Results TextField
                     // Results.setText(Results.getText() + "Please Enter Only Numbers! " + "\n");
