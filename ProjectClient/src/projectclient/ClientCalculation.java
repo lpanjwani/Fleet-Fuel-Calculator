@@ -38,6 +38,8 @@ public class ClientCalculation {
     // Calculates Cost of Trip
     private void calculateCost() {
         this.tripCost = (this.distance / this.efficiency) * this.litterPrice;
+
+        // Check for Arithmetic Exceptions such as Division by 0, etc
         if (Math.abs(this.tripCost = 1 / this.tripCost) < Double.POSITIVE_INFINITY) {
             throw new ArithmeticException();
         }
