@@ -9,6 +9,7 @@
  * COMPONENTS:
  *       JAVAFX - Scene, Stage, GridPane ,HPos, Insets, Alert, Button, Label, TextArea, ToggleGroup, RadioButton, EventHandler, ActionEvent
  */
+// Package (Contains all files relating to the project) Name
 package projectclient;
 
 // Import Java Libaries
@@ -26,8 +27,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 

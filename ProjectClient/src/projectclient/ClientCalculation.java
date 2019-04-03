@@ -37,10 +37,11 @@ public class ClientCalculation {
 
     // Calculates Cost of Trip
     private void calculateCost() {
+        // Calculation Formula for Trip Cosr
         this.tripCost = (this.distance / this.efficiency) * this.litterPrice;
 
         // Check for Arithmetic Exceptions such as Division by 0, etc
-        if (Math.abs(this.tripCost = 1 / this.tripCost) < Double.POSITIVE_INFINITY) {
+        if (Double.isInfinite(this.tripCost) || Double.isNaN(this.tripCost) || this.tripCost < 0) {
             throw new ArithmeticException();
         }
     }
