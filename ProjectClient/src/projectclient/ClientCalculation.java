@@ -7,6 +7,7 @@ package projectclient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -64,19 +65,37 @@ public class ClientCalculation {
         this.tripCost = (this.distance / this.efficiency) * this.litterPrice;
 
         // Check for Arithmetic Exceptions such as Division by 0, etc
-        if (Math.abs(this.tripCost = 1 / this.tripCost) < Double.POSITIVE_INFINITY) {
+        if (Double.isInfinite(this.tripCost) || Double.isNaN(this.tripCost) || this.tripCost < 0) {
             throw new ArithmeticException();
         }
-
+        // Starts process of output
+        File outputFile = new File("output.csv");
+        
+        // File Exists Indicator
+        boolean fileFound = false;
+        
+        // Check if Output File Exists to confirm Headers Exists
+        if (outputFile.exists()) {
+            // Set File Found Indicator
+            fileFound = true;
+        }
+        
         // Decleare Output File Location
-        FileWriter outputFile = new FileWriter("output.csv", true);
+        FileWriter outputWriter = new FileWriter(outputFile, true);
 
         // Output Writing Process
-        BufferedWriter output = new BufferedWriter(outputFile);
+        BufferedWriter output = new BufferedWriter(outputWriter);
+        
+        // Write Headers if file does not exist
+        if(!fileFound){
+             // Output Headers
+            output.write("Distance" + "," + "Efficiency" + "," + "Price of Each Price" + ","
+                    + "Trip Cost" + "\n");
+        }
 
         // Write Values in CSV
         output.write(this.distance + "," + this.efficiency + "," + this.litterPrice + ","
-                + Double.toString(this.tripCost) + "\n");
+                + (String.format("%.2f", this.tripCost)) + "\n");
 
         // Close Writer Process
         output.close();
