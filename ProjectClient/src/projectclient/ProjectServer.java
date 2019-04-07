@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package projectserver;
+package projectclient;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -19,11 +18,10 @@ import java.net.Socket;
  * @author Lavesh
  */
 public class ProjectServer {
-
-    public static void main(String[] args) throws IOException, FileNotFoundException, IOException {
-
+    
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         // Define Server Port
-        int Port = 6000;
+        final int Port = 6000;
 
         // ServerSocket is used for purpose of waiting for a connection from a client
         ServerSocket welcomeSocket = new ServerSocket(Port);
@@ -36,11 +34,11 @@ public class ProjectServer {
             Socket connectionSocket = welcomeSocket.accept();
 
             // ObjectInputStream and ObjectOutputStream used for sending and receiving data from and to a client
-            DataInputStream in = new DataInputStream(connectionSocket.getInputStream());
-            DataOutputStream out = new DataOutputStream(connectionSocket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
+            ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
 
-            // Read String from Clients
-            String clientInput = in.readUTF();
+            // Read Objects from Clients
+            CalculationRequest clientInput = (CalculationRequest) in.readObject();
 
             // Decleare Input File Location
             FileReader inputFile = new FileReader("input.csv");
@@ -55,9 +53,10 @@ public class ProjectServer {
                 // Converts cell Information into an Array position when comma is detected.
                 String[] rowValues = line.split(",");
                 // Cross Checks to find Selected Fuel Type by User & CSV Match.
-                if (rowValues[0].equals(clientInput)) {
+                if (rowValues[0].equals(clientInput.getLitterInfo())) {
                     // Sends Price of Litter to Client
-                    out.writeUTF(rowValues[1]);
+                    clientInput.calculateCost(Double.parseDouble(rowValues[1]));
+                    out.writeObject(clientInput);
                 }
             }
 
@@ -70,4 +69,5 @@ public class ProjectServer {
         }
 
     }
+    
 }

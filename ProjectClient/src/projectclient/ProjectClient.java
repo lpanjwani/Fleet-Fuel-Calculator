@@ -14,6 +14,9 @@ package projectclient;
 // Import Java Libaries
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -37,6 +40,10 @@ import javafx.stage.Stage;
  */
 // ProjectClient Class handles JAVAFX Client Side. ProjectClient 'extends' Application Class for JAVAFX Library.
 public class ProjectClient extends Application {
+
+    // Server Name & Port for Socket Connection / Could be changed easily for dynamic environments
+    private final String serverName = "localhost";
+    private final int port = 6000;
 
     @Override
     public void start(Stage primaryStage) {
@@ -176,12 +183,26 @@ public class ProjectClient extends Application {
                      * Input 2 - Fuel Effiency: (Double) Parses Double from String from TextField
                      * Input 3 - Fuel Choice: (String) Retrieves Value from RadioButton
                      */
-                    ClientCalculation values = new ClientCalculation(Double.parseDouble(distanceInput.getText()), Double.parseDouble(fuelEffieciencyInput.getText()), fuelType.getSelectedToggle().toString().split("'")[1]);
+                    CalculationRequest values = new CalculationRequest(Double.parseDouble(distanceInput.getText()), Double.parseDouble(fuelEffieciencyInput.getText()), fuelType.getSelectedToggle().toString().split("'")[1]);
 
+                    // Start Socket Connection at serverName & Port specified above
+                    Socket client = new Socket(serverName, port);
+
+                    // Send Data through ObjectOutputStream & Recieve through ObjectInputStream (Sending Data through Objects)
+                    ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
+                    ObjectInputStream in = new ObjectInputStream(client.getInputStream());
+
+                    // Send Object to Server
+                    out.writeObject(values);
+
+                    // Wait to Recieve Response from Server
+                    CalculationRequest response = (CalculationRequest) in.readObject();
+
+                    // Results Display Text
                     String display = "Trip Distance: " + distanceInput.getText() + " Miles \n"
                             + "Car’s fuel efficiency: " + fuelEffieciencyInput.getText() + " MPG \n"
-                            + "Cost of fuel per litter: £" + values.getLitterPrice() + "\n"
-                            + "Fuel Cost: £" + (String.format("%.2f", values.getCost()));
+                            + "Cost of fuel per litter: £" + response.getLitterPrice() + "\n"
+                            + "Fuel Cost: £" + (String.format("%.2f", response.getCost()));
 
                     // Adds New Result in 'Results' TextField with 2 Decimal Points Rounding.
                     Results.setText(display);
@@ -225,6 +246,14 @@ public class ProjectClient extends Application {
 
                     // Shows Error Alert Box & Waits for User Dismissal
                     ioErrorAlert.showAndWait();
+                } catch (ClassNotFoundException ex) {
+                    // This section is excuted when there no CalculationRequestFound
+
+                    // Define Error Alert Box
+                    Alert classNotFound = new Alert(AlertType.ERROR, "Dear User, It seems like you have missing files. Please re-install this application");
+
+                    // Shows Error Alert Box & Waits for User Dismissal
+                    classNotFound.showAndWait();
                 }
             }
         });
