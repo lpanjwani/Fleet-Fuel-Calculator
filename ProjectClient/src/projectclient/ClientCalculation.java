@@ -1,17 +1,23 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * ClientCalculation as the name suggests handles all Client-Based Calculations
+ * Common Variables:
+ * 1) Distance (Double)
+ * 2) Car's Fuel Effiency (Double)
+ * 3) Price of a Litter (Double)
+ * 4) Trip Cost (Calculated || Double)
  */
 package projectclient;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 /**
  *
@@ -26,28 +32,29 @@ public class ClientCalculation {
 
     // Constructor with Distance (Double), Fuel Efficiency (Double) & Price of Litter (String)
     ClientCalculation(double distance, double efficiency, String fuelType) throws FileNotFoundException, IOException {
+        // Server Name & Port for Socket Connection / Could be changed easily for dynamic environments
+        String serverName = "localhost";
+        int port = 6000;
 
-        // Decleare Input File Location
-        FileReader inputFile = new FileReader("input.csv");
-        // Input Retrieving Process
-        BufferedReader input = new BufferedReader(inputFile);
+        // Start Socket Connection at serverName & Port specified above
+        Socket client = new Socket(serverName, port);
 
-        // Decleare String so it can take a new value everytime Constructor is called.
-        String line;
+        // Send Data through OutputStream & DataOutStream (String Purposes)
+        OutputStream outToServer = client.getOutputStream();
+        DataOutputStream out = new DataOutputStream(outToServer);
 
-        // While Loop to Gets Each Line
-        while ((line = input.readLine()) != null) {
-            // Converts cell Information into an Array position when comma is detected.
-            String[] rowValues = line.split(",");
-            // Cross Checks to find Selected Fuel Type by User & CSV Match.
-            if (rowValues[0].equals(fuelType)) {
-                // Stores the Price of a Litter
-                this.litterPrice = Double.parseDouble(rowValues[1]);
-            }
-        }
+        // Send Fuel Selection to Server
+        out.writeUTF(fuelType);
 
-        // Close File Reading Function
-        input.close();
+        // Retrieve data through InputStream & DataInputStream (String Purposes)
+        InputStream inFromServer = client.getInputStream();
+        DataInputStream in = new DataInputStream(inFromServer);
+
+        // Recieve Fuel Price on Server & Store in local variable
+        this.litterPrice = Double.parseDouble(in.readUTF());
+
+        // Close Connection with Server
+        client.close();
 
         // Sets Distance, based recieved values from parameter
         this.distance = distance;
@@ -70,25 +77,25 @@ public class ClientCalculation {
         }
         // Starts process of output
         File outputFile = new File("output.csv");
-        
+
         // File Exists Indicator
         boolean fileFound = false;
-        
+
         // Check if Output File Exists to confirm Headers Exists
         if (outputFile.exists()) {
             // Set File Found Indicator
             fileFound = true;
         }
-        
+
         // Decleare Output File Location
         FileWriter outputWriter = new FileWriter(outputFile, true);
 
         // Output Writing Process
         BufferedWriter output = new BufferedWriter(outputWriter);
-        
+
         // Write Headers if file does not exist
-        if(!fileFound){
-             // Output Headers
+        if (!fileFound) {
+            // Output Headers
             output.write("Distance" + "," + "Efficiency" + "," + "Price of Each Price" + ","
                     + "Trip Cost" + "\n");
         }
