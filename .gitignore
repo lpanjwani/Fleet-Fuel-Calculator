@@ -1,3 +1,5 @@
 ProjectClient/output.csv
 build/
-/ProjectServer/dist/
+dist/
+ProjectClient/build/
+ProjectClient/dist/
