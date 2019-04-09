@@ -1,5 +1,5 @@
 /*
- * ALSET FUEL CALCULATOR PROGRAM
+ * ALSET FUEL CALCULATOR PROGRAM (CLIENT-SIDE)
  * INPUT: 
  *       1) Trip distance in miles (TextField)
  *       2) Car’s Fuel Efficiency 
