@@ -22,6 +22,11 @@ public class CalculationRequest implements Serializable {
     private double tripCost;
     private String litterInfo;
 
+    // No-Args Constructor
+    CalculationRequest() {
+
+    }
+
     // Constructor with Distance (Double), Fuel Efficiency (Double) & Price of Litter (String)
     CalculationRequest(double distance, double efficiency, String fuelType) {
 
@@ -71,7 +76,7 @@ public class CalculationRequest implements Serializable {
         return this.tripCost;
     }
 
-// Sends Litter Information (String)
+    // Sends Litter Information (String)
     public String getLitterInfo() {
         return this.litterInfo;
     }

@@ -21,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
@@ -46,65 +47,48 @@ public class ProjectServer {
             ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
             ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
 
-            // Read Objects from Clients
-            CalculationRequest clientInput = (CalculationRequest) in.readObject();
+            String selectedOption = in.readUTF();
+            
+            if (selectedOption.equals("Calculation Required")) {
+                // Read Objects from Clients
+                CalculationRequest clientInput = (CalculationRequest) in.readObject();
+                // Decleare Input File Location
+                FileReader inputFileReader = new FileReader("input.csv");
+                // Input Retrieving Process
+                BufferedReader fileInput = new BufferedReader(inputFileReader);
+
+                String line;
+
+                // While Loop to Gets Each Line
+                while ((line = fileInput.readLine()) != null) {
+                    // Converts cell Information into an Array position when comma is detected.
+                    String[] rowValues = line.split(",");
+                    // Cross Checks to find Selected Fuel Type by User & CSV Match.
+                    if (rowValues[0].equals(clientInput.getLitterInfo())) {
+                        // Sends Price of Litter to Client
+                        clientInput.calculateCost(Double.parseDouble(rowValues[1]));
+                    }
+                }
+
+                StoreList clientProcessing = new StoreList();
+                clientProcessing.saveList(clientInput);
+                out.writeObject(clientInput);
+            } else if (selectedOption.equals("Retreival Process")) {
+                StoreList clientProcessing = new StoreList();
+                ArrayList<CalculationRequest> arrayList = (ArrayList<CalculationRequest>) clientProcessing.getList();
+//                for (CalculationRequest c : arrayList) {
+//                    clientProcessing.saveList(c);
+//                }
+                out.writeObject(clientProcessing);
+            }
 
             // Decleare Input File Location
             FileReader inputFileReader = new FileReader("input.csv");
             // Input Retrieving Process
             BufferedReader fileInput = new BufferedReader(inputFileReader);
 
-            // Starts process of output
-            File outputFile = new File("output.csv");
-
-            // File Exists Indicator
-            boolean fileFound = false;
-
-            // Check if Output File Exists to confirm Headers Exists
-            if (outputFile.exists()) {
-                // Set File Found Indicator
-                fileFound = true;
-            }
-
-            // Decleare Output File Location
-            FileWriter outputWriter = new FileWriter(outputFile, true);
-
-            // Output Writing Process
-            BufferedWriter fileOutput = new BufferedWriter(outputWriter);
-
-            // Write Headers if file does not exist
-            if (!fileFound) {
-                // Output Headers
-                fileOutput.write("Distance" + "," + "Efficiency" + "," + "Price of Each Price" + ","
-                        + "Trip Cost" + "\n");
-            }
-
-            // Decleare String so it can take a new value everytime Constructor is called.
-            String line;
-
-            // While Loop to Gets Each Line
-            while ((line = fileInput.readLine()) != null) {
-                // Converts cell Information into an Array position when comma is detected.
-                String[] rowValues = line.split(",");
-                // Cross Checks to find Selected Fuel Type by User & CSV Match.
-                if (rowValues[0].equals(clientInput.getLitterInfo())) {
-                    // Sends Price of Litter to Client
-                    clientInput.calculateCost(Double.parseDouble(rowValues[1]));
-
-                    // Write Values in Output CSV
-                    fileOutput.write(clientInput.getDistance() + "," + clientInput.getEfficiency() + "," + clientInput.getLitterPrice() + ","
-                            + (String.format("%.2f", clientInput.getCost())) + "\n");
-
-                    // Send Output with Calculation back to Client
-                    out.writeObject(clientInput);
-                }
-            }
-
             // Close File Reading Process
             fileInput.close();
-
-            // Close File Writing Process
-            fileOutput.close();
 
             // Close Connection with Client
             connectionSocket.close();

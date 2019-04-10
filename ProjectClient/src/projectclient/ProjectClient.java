@@ -192,6 +192,9 @@ public class ProjectClient extends Application {
                     ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
                     ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 
+                    // Tell Server this is a calculation request
+                    out.writeUTF("Calculation Required");
+
                     // Send Object to Server
                     out.writeObject(values);
 
@@ -258,10 +261,98 @@ public class ProjectClient extends Application {
             }
         });
 
+        // Decleare Button 'Calculate'
+        Button retrieveValues = new Button("Retrieve");
+        // Give CSS Properties with Class .CalculateButton to Calculate Button
+        retrieveValues.getStyleClass().add("CalculateButton");
+        // Instruct GridPane to Give Margins to Calculate
+        GridPane.setMargin(retrieveValues, new Insets(10, 0, 10, 0));
+        // Give Row 8 & Column 2 to TextArea 'Calculate' via GridPane
+        GridPane.setConstraints(retrieveValues, 3, 7);
+        // Calculate onClick EventHandler
+        retrieveValues.setOnAction(new EventHandler<ActionEvent>() {
+            // Override Default Handle ActionEvent
+            @Override
+            public void handle(ActionEvent event) {
+                // Try Catch Statement for ErrorHandling of NumberFormatExpection
+                try {
+
+                    // Start Socket Connection at serverName & Port specified above
+                    Socket client = new Socket(serverName, port);
+
+                    // Send Data through ObjectOutputStream & Recieve through ObjectInputStream (Sending Data through Objects)
+                    ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
+                    ObjectInputStream in = new ObjectInputStream(client.getInputStream());
+
+                    // Tell Server this is a calculation request
+                    out.writeUTF("Retreival Process");
+
+                    // Wait to Recieve Response from Server
+                    StoreList response = (StoreList) in.readObject();
+
+                    // Results Display Text
+                    String display = response.toString();
+                    
+                    System.out.println(display);
+
+                    // Adds New Result in 'Results' TextField with 2 Decimal Points Rounding.
+                    Results.setText(display);
+
+                    // Optional AlertBox for Results
+                    Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION, display);
+
+                    // Show Response to User & Await Dismissal
+                    calulcatedResponse.showAndWait();
+                } catch (NumberFormatException | ArithmeticException ex) {
+                    // This section is excuted when there is a NumberFormatException
+
+                    // Optional: Set Error Information in Results TextField
+                    // Results.setText(Results.getText() + "Please Enter Only Numbers! " + "\n");
+                    // Define Error Alert Box
+                    Alert expectionAlert = new Alert(AlertType.ERROR, "Dear User, Please Enter Numbers & Make Sure They are Correct!");
+                    // Shows Error Alert Box & Waits for User Dismissal
+                    expectionAlert.showAndWait();
+                } catch (NullPointerException ex) {
+                    // This section is excuted when there is a NullPointerException
+
+                    // Define Error Alert Box
+                    Alert nullPointerAlert = new Alert(AlertType.ERROR, "Dear User, Please select the fuel type!");
+
+                    // Shows Error Alert Box & Waits for User Dismissal
+                    nullPointerAlert.showAndWait();
+
+                } catch (FileNotFoundException ex) {
+                    // This section is excuted when there is a FileNotFoundException
+
+                    // Define Error Alert Box
+                    Alert fileNotFoundAlert = new Alert(AlertType.ERROR, "Dear User, Input File was not found! Please make sure it exists.");
+
+                    // Shows Error Alert Box & Waits for User Dismissal
+                    fileNotFoundAlert.showAndWait();
+                } catch (IOException ex) {
+                    // This section is excuted when there is a Input Output Exception
+
+                    // Define Error Alert Box
+                    Alert ioErrorAlert = new Alert(AlertType.ERROR, "Dear User, Please Close Other Programs.");
+
+                    // Shows Error Alert Box & Waits for User Dismissal
+                    ioErrorAlert.showAndWait();
+                } catch (ClassNotFoundException ex) {
+                    // This section is excuted when there no CalculationRequestFound
+
+                    // Define Error Alert Box
+                    Alert classNotFound = new Alert(AlertType.ERROR, "Dear User, It seems like you have missing files. Please re-install this application");
+
+                    // Shows Error Alert Box & Waits for User Dismissal
+                    classNotFound.showAndWait();
+                }
+            }
+        });
+
         // Add Elements / Objects for Display in GridPane
         root.getChildren().addAll(companyName, programDescription, distanceLabel,
                 distanceInput, distanceUnitLabel, fuelEffieciencyLabel, fuelEffieciencyInput,
-                fuelUnitLabel, fuelTypeLabel, Octane, Diesel, calculate, Results);
+                fuelUnitLabel, fuelTypeLabel, Octane, Diesel, calculate, retrieveValues, Results);
 
         // Define Scene & Screen Dimensions
         // Scene scene = new Scene(root, 1000, 600);
