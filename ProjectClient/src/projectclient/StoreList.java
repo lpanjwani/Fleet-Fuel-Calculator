@@ -33,7 +33,9 @@ public class StoreList extends CalculationRequest {
     public ArrayList getList() throws FileNotFoundException, IOException, ClassNotFoundException {
         FileInputStream fileInput = new FileInputStream("storeData.dat");
         ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+        System.out.println(objectInput.readObject());
         this.storeArray = (ArrayList<CalculationRequest>) objectInput.readObject();
+        System.out.println(this.storeArray);
         objectInput.close();
         return this.storeArray;
     }

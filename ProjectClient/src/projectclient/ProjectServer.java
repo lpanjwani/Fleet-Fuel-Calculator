@@ -76,10 +76,9 @@ public class ProjectServer {
             } else if (selectedOption.equals("Retreival Process")) {
                 StoreList clientProcessing = new StoreList();
                 ArrayList<CalculationRequest> arrayList = (ArrayList<CalculationRequest>) clientProcessing.getList();
-//                for (CalculationRequest c : arrayList) {
-//                    clientProcessing.saveList(c);
-//                }
-                out.writeObject(clientProcessing);
+                System.out.println(arrayList);
+                arrayList.forEach(s -> System.out.println(s));
+                out.writeObject(arrayList);
             }
 
             // Decleare Input File Location
