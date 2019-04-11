@@ -12,88 +12,94 @@
 package projectclient;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
-/**
- *
- * @author Lavesh
- */
 public class ProjectServer {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) {
         // Define Server Port
         final int Port = 6000;
 
-        // ServerSocket is used for purpose of waiting for a connection from a client
-        ServerSocket welcomeSocket = new ServerSocket(Port);
+        try {
 
-        // Keep Program always in ready state to serve Clients
-        while (true) {
-            // Once a connection from client is received, the server soocket will accept it
-            // which will result in creation of Socket object
-            // Socket obejct will be used for sending and receiving data for and to a server
-            Socket connectionSocket = welcomeSocket.accept();
+            // ServerSocket is used for purpose of waiting for a connection from a client
+            ServerSocket welcomeSocket = new ServerSocket(Port);
 
-            // ObjectInputStream and ObjectOutputStream used for sending and receiving data from and to a client
-            ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
-            ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
+            // Keep Program always in ready state to serve Clients
+            while (true) {
+                // Once a connection from client is received, the server soocket will accept it
+                // which will result in creation of Socket object
+                // Socket obejct will be used for sending and receiving data for and to a server
+                Socket connectionSocket = welcomeSocket.accept();
 
-            String selectedOption = in.readUTF();
-            
-            if (selectedOption.equals("Calculation Required")) {
+                // ObjectInputStream and ObjectOutputStream used for sending and receiving data from and to a client
+                ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
+                ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
+
                 // Read Objects from Clients
                 CalculationRequest clientInput = (CalculationRequest) in.readObject();
+
+                // Get Header from Client Recieved Object
+                if (clientInput.getHeader().equals("Calculation Required")) {
+                    // Run this section if request is to calculate
+                    // Decleare Input File Location
+                    FileReader inputFileReader = new FileReader("input.csv");
+                    // Input Retrieving Process
+                    BufferedReader fileInput = new BufferedReader(inputFileReader);
+
+                    String line;
+
+                    // While Loop to Gets Each Line
+                    while ((line = fileInput.readLine()) != null) {
+                        // Converts cell Information into an Array position when comma is detected.
+                        String[] rowValues = line.split(",");
+                        // Cross Checks to find Selected Fuel Type by User & CSV Match.
+                        if (rowValues[0].equals(clientInput.getLitterInfo())) {
+                            // Sends Price of Litter to Client
+                            clientInput.calculateCost(Double.parseDouble(rowValues[1]));
+                        }
+                    }
+
+                    StoreList clientProcessing = new StoreList();
+                    clientProcessing.saveList(clientInput);
+                    out.writeObject(clientInput);
+                } // Check if it a Calculation Retrieval Request 
+                else if (clientInput.getHeader().equals("Retreival Process")) {
+                    // Run this section if request is to retrieve previous calculations
+                    // init fresh StoreList
+                    StoreList clientProcessing = new StoreList();
+                    // Retrieve all previous calculations as ArrayList
+                    clientProcessing.getList();
+                    // Send this information as object back to client
+                    out.writeObject(clientProcessing);
+                }
+
                 // Decleare Input File Location
                 FileReader inputFileReader = new FileReader("input.csv");
                 // Input Retrieving Process
                 BufferedReader fileInput = new BufferedReader(inputFileReader);
 
-                String line;
+                // Close File Reading Process
+                fileInput.close();
 
-                // While Loop to Gets Each Line
-                while ((line = fileInput.readLine()) != null) {
-                    // Converts cell Information into an Array position when comma is detected.
-                    String[] rowValues = line.split(",");
-                    // Cross Checks to find Selected Fuel Type by User & CSV Match.
-                    if (rowValues[0].equals(clientInput.getLitterInfo())) {
-                        // Sends Price of Litter to Client
-                        clientInput.calculateCost(Double.parseDouble(rowValues[1]));
-                    }
-                }
+                // Close Connection with Client
+                connectionSocket.close();
 
-                StoreList clientProcessing = new StoreList();
-                clientProcessing.saveList(clientInput);
-                out.writeObject(clientInput);
-            } else if (selectedOption.equals("Retreival Process")) {
-                StoreList clientProcessing = new StoreList();
-                ArrayList<CalculationRequest> arrayList = (ArrayList<CalculationRequest>) clientProcessing.getList();
-                System.out.println(arrayList);
-                arrayList.forEach(s -> System.out.println(s));
-                out.writeObject(arrayList);
             }
-
-            // Decleare Input File Location
-            FileReader inputFileReader = new FileReader("input.csv");
-            // Input Retrieving Process
-            BufferedReader fileInput = new BufferedReader(inputFileReader);
-
-            // Close File Reading Process
-            fileInput.close();
-
-            // Close Connection with Client
-            connectionSocket.close();
-
+        } // Handle Input Output Exception
+        catch (IOException ex) {
+            // Print Exception Text For Admin
+            System.out.println("Dear Admin, Other Process are Running in Background. Please close them." + ex);
+        } // Handle ClassNotFound Exception
+        catch (ClassNotFoundException ex) {
+            // Print Exception Text For Admin
+            System.out.println("Dear Admin, Class is not found" + ex);
         }
-
     }
 
 }

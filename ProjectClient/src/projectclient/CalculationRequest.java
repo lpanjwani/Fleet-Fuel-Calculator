@@ -21,14 +21,23 @@ public class CalculationRequest implements Serializable {
     private double litterPrice;
     private double tripCost;
     private String litterInfo;
+    private String header;
+    private static final long serialVersionUID = 6529685098267757690L;
 
     // No-Args Constructor
     CalculationRequest() {
 
     }
 
+    // No-Args Constructor
+    CalculationRequest(String header) {
+        this.header = header;
+    }
+
     // Constructor with Distance (Double), Fuel Efficiency (Double) & Price of Litter (String)
-    CalculationRequest(double distance, double efficiency, String fuelType) {
+    CalculationRequest(String header, double distance, double efficiency, String fuelType) {
+
+        this.header = header;
 
         // Sets Distance, based recieved values from parameter
         this.distance = distance;
@@ -79,6 +88,21 @@ public class CalculationRequest implements Serializable {
     // Sends Litter Information (String)
     public String getLitterInfo() {
         return this.litterInfo;
+    }
+
+    // Sends Litter Information (String)
+    public String getHeader() {
+        return this.header;
+    }
+
+    // Text for Client Slide Display
+    @Override
+    public String toString() {
+        // Results Display Text
+        return "Trip Distance: " + this.getDistance() + " Miles \n"
+                + "Car’s fuel efficiency: " + this.getEfficiency() + " MPG \n"
+                + "Cost of fuel per litter: £" + this.getLitterPrice() + "\n"
+                + "Fuel Cost: £" + (String.format("%.2f", this.getCost())) + "\n";
     }
 
 }

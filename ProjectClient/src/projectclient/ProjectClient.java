@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -166,9 +168,9 @@ public class ProjectClient extends Application {
         // Decleare Button 'Calculate'
         Button calculate = new Button("Calculate");
         // Give CSS Properties with Class .CalculateButton to Calculate Button
-        calculate.getStyleClass().add("CalculateButton");
+        calculate.getStyleClass().add("Button");
         // Instruct GridPane to Give Margins to Calculate
-        GridPane.setMargin(calculate, new Insets(10, 0, 10, 0));
+        GridPane.setMargin(calculate, new Insets(10, 0, 20, 10));
         // Give Row 8 & Column 2 to TextArea 'Calculate' via GridPane
         GridPane.setConstraints(calculate, 2, 7);
         // Calculate onClick EventHandler
@@ -183,7 +185,7 @@ public class ProjectClient extends Application {
                      * Input 2 - Fuel Effiency: (Double) Parses Double from String from TextField
                      * Input 3 - Fuel Choice: (String) Retrieves Value from RadioButton
                      */
-                    CalculationRequest values = new CalculationRequest(Double.parseDouble(distanceInput.getText()), Double.parseDouble(fuelEffieciencyInput.getText()), fuelType.getSelectedToggle().toString().split("'")[1]);
+                    CalculationRequest values = new CalculationRequest("Calculation Required", Double.parseDouble(distanceInput.getText()), Double.parseDouble(fuelEffieciencyInput.getText()), fuelType.getSelectedToggle().toString().split("'")[1]);
 
                     // Start Socket Connection at serverName & Port specified above
                     Socket client = new Socket(serverName, port);
@@ -191,9 +193,6 @@ public class ProjectClient extends Application {
                     // Send Data through ObjectOutputStream & Recieve through ObjectInputStream (Sending Data through Objects)
                     ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
                     ObjectInputStream in = new ObjectInputStream(client.getInputStream());
-
-                    // Tell Server this is a calculation request
-                    out.writeUTF("Calculation Required");
 
                     // Send Object to Server
                     out.writeObject(values);
@@ -264,9 +263,9 @@ public class ProjectClient extends Application {
         // Decleare Button 'Calculate'
         Button retrieveValues = new Button("Retrieve");
         // Give CSS Properties with Class .CalculateButton to Calculate Button
-        retrieveValues.getStyleClass().add("CalculateButton");
+        retrieveValues.getStyleClass().add("Button");
         // Instruct GridPane to Give Margins to Calculate
-        GridPane.setMargin(retrieveValues, new Insets(10, 0, 10, 0));
+        GridPane.setMargin(retrieveValues, new Insets(0, 0, 10, -100));
         // Give Row 8 & Column 2 to TextArea 'Calculate' via GridPane
         GridPane.setConstraints(retrieveValues, 3, 7);
         // Calculate onClick EventHandler
@@ -284,16 +283,16 @@ public class ProjectClient extends Application {
                     ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
                     ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 
-                    // Tell Server this is a calculation request
-                    out.writeUTF("Retreival Process");
+                    CalculationRequest values = new CalculationRequest("Retreival Process");
+
+                    out.writeObject(values);
 
                     // Wait to Recieve Response from Server
                     StoreList response = (StoreList) in.readObject();
 
                     // Results Display Text
-                    String display = response.toString();
+                    String display = response.showList();
                     
-                    System.out.println(display);
 
                     // Adds New Result in 'Results' TextField with 2 Decimal Points Rounding.
                     Results.setText(display);
@@ -303,32 +302,6 @@ public class ProjectClient extends Application {
 
                     // Show Response to User & Await Dismissal
                     calulcatedResponse.showAndWait();
-                } catch (NumberFormatException | ArithmeticException ex) {
-                    // This section is excuted when there is a NumberFormatException
-
-                    // Optional: Set Error Information in Results TextField
-                    // Results.setText(Results.getText() + "Please Enter Only Numbers! " + "\n");
-                    // Define Error Alert Box
-                    Alert expectionAlert = new Alert(AlertType.ERROR, "Dear User, Please Enter Numbers & Make Sure They are Correct!");
-                    // Shows Error Alert Box & Waits for User Dismissal
-                    expectionAlert.showAndWait();
-                } catch (NullPointerException ex) {
-                    // This section is excuted when there is a NullPointerException
-
-                    // Define Error Alert Box
-                    Alert nullPointerAlert = new Alert(AlertType.ERROR, "Dear User, Please select the fuel type!");
-
-                    // Shows Error Alert Box & Waits for User Dismissal
-                    nullPointerAlert.showAndWait();
-
-                } catch (FileNotFoundException ex) {
-                    // This section is excuted when there is a FileNotFoundException
-
-                    // Define Error Alert Box
-                    Alert fileNotFoundAlert = new Alert(AlertType.ERROR, "Dear User, Input File was not found! Please make sure it exists.");
-
-                    // Shows Error Alert Box & Waits for User Dismissal
-                    fileNotFoundAlert.showAndWait();
                 } catch (IOException ex) {
                     // This section is excuted when there is a Input Output Exception
 
@@ -338,13 +311,13 @@ public class ProjectClient extends Application {
                     // Shows Error Alert Box & Waits for User Dismissal
                     ioErrorAlert.showAndWait();
                 } catch (ClassNotFoundException ex) {
-                    // This section is excuted when there no CalculationRequestFound
+                    // This section is excuted when there is a problem finding the class
 
                     // Define Error Alert Box
-                    Alert classNotFound = new Alert(AlertType.ERROR, "Dear User, It seems like you have missing files. Please re-install this application");
+                    Alert classNotFoundErrorAlert = new Alert(AlertType.ERROR, "Dear User, Unknown Error Occured. Please inform the your IT Administrator.");
 
                     // Shows Error Alert Box & Waits for User Dismissal
-                    classNotFound.showAndWait();
+                    classNotFoundErrorAlert.showAndWait();
                 }
             }
         });

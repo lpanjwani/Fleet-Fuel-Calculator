@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This Class Extends Calcution Request
+ * Stores Calculation in ArrayList which is stored in a file
  */
 package projectclient;
 
@@ -13,69 +12,68 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-/**
- *
- * @author Lavesh
- */
+// StoreList Class Inherits Properties from CalculationRequest
 public class StoreList extends CalculationRequest {
 
+    // Defines ArrayList Type & Name
     ArrayList<CalculationRequest> storeArray;
-    
-    public StoreList() {
-        this.storeArray = new ArrayList<>();
+    // Data Store File Location
+    private static final String DATA_STORE = "calculationDB.dat";
+//    private static final long serialVersionUID = 6529685098267757690L;
+
+    // init new Store ArrayList
+    public StoreList() throws IOException, FileNotFoundException, ClassNotFoundException {
+        // clear all exisiting Information to avoid any problems
+        this.storeArray = new ArrayList<CalculationRequest>();
     }
 
-    public StoreList(double distance, double efficiency, String fuelType) {
-        super(distance, efficiency, fuelType);
-        this.storeArray = new ArrayList<>();
-    }
-
-    public ArrayList getList() throws FileNotFoundException, IOException, ClassNotFoundException {
-        FileInputStream fileInput = new FileInputStream("storeData.dat");
+    // Retrives ArrayList Containing All Calculations from Data Store
+    public void getList() throws FileNotFoundException, IOException, ClassNotFoundException {
+        // Defines dataStore location & accessing Method
+        FileInputStream fileInput = new FileInputStream(this.DATA_STORE);
+        // init Object to file proccesor
         ObjectInputStream objectInput = new ObjectInputStream(fileInput);
-        System.out.println(objectInput.readObject());
+        // Gets all Information in File & Casts them to ArrayList of CalculationRequests
         this.storeArray = (ArrayList<CalculationRequest>) objectInput.readObject();
-        System.out.println(this.storeArray);
+        // Close File Input Accessors
         objectInput.close();
-        return this.storeArray;
     }
 
+    // Saves ArrayList Containing All Old Calculations & New Calculations to Data Store
     public void saveList(CalculationRequest calculation) throws FileNotFoundException, IOException {
-        this.storeArray.add(calculation);
-        FileOutputStream fileOutput = new FileOutputStream("storeData.dat");
+        // Try Catch for Multiple Errors Handling
+        try {
+            // Retrieve Existing List from Data Store
+            getList();
+
+        } // Handle All Exception Occuring
+        catch (Exception ex) {
+            // No Action Required here
+        }
+        // Starting Output Accessors & Output Location
+        FileOutputStream fileOutput = new FileOutputStream(this.DATA_STORE);
+        // Start Object to File Conversion Accessors
         ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+
+        // Add new Calculation with Properties to Temporary Local Data Store
+        this.storeArray.add(calculation);
+
+        // Update File Data to include Latest Calculation
         objectOutput.writeObject(this.storeArray);
+        // Close File Output Accessors
         objectOutput.close();
     }
 
-    // Sends Back Distance
-    @Override
-    public double getDistance() {
-        return super.getDistance();
+    // Display CalculationRequests Information to User via String
+    public String showList() {
+        // init Blank String for temporary Display
+        String stringContent = "";
+        // Loop runs Dynamically based on how many Requests are stored in file
+        for (CalculationRequest cal : this.storeArray) {
+            // Add Calculation Information for Display
+            stringContent += cal.toString();
+        }
+        // Respond with all Calculation Information
+        return stringContent;
     }
-
-    // Sends Back Efficiency
-    @Override
-    public double getEfficiency() {
-        return super.getEfficiency();
-    }
-
-    // Sends Back Price of Litter
-    @Override
-    public double getLitterPrice() {
-        return super.getLitterPrice();
-    }
-
-    // Sends Back Cost of Trip
-    @Override
-    public double getCost() {
-        return super.getCost();
-    }
-
-    // Sends Litter Information (String)
-    @Override
-    public String getLitterInfo() {
-        return super.getLitterInfo();
-    }
-
 }
