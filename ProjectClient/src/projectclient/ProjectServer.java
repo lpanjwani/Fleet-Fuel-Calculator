@@ -19,12 +19,14 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+// Class that contains all Server Code
 public class ProjectServer {
 
     public static void main(String[] args) {
         // Define Server Port
         final int Port = 6000;
 
+        // Expection Handling
         try {
 
             // ServerSocket is used for purpose of waiting for a connection from a client
@@ -44,6 +46,9 @@ public class ProjectServer {
                 // Read Objects from Clients
                 CalculationRequest clientInput = (CalculationRequest) in.readObject();
 
+                // init fresh StoreList
+                StoreList clientProcessing = new StoreList();
+
                 // Get Header from Client Recieved Object
                 if (clientInput.getHeader().equals("Calculation Required")) {
                     // Run this section if request is to calculate
@@ -52,6 +57,7 @@ public class ProjectServer {
                     // Input Retrieving Process
                     BufferedReader fileInput = new BufferedReader(inputFileReader);
 
+                    // init Clean String
                     String line;
 
                     // While Loop to Gets Each Line
@@ -64,28 +70,20 @@ public class ProjectServer {
                             clientInput.calculateCost(Double.parseDouble(rowValues[1]));
                         }
                     }
-
-                    StoreList clientProcessing = new StoreList();
+                    // Close File Reading Process
+                    fileInput.close();
+                    // Save Information in File Storage
                     clientProcessing.saveList(clientInput);
+                    // Send Back Information to Client
                     out.writeObject(clientInput);
                 } // Check if it a Calculation Retrieval Request 
                 else if (clientInput.getHeader().equals("Retreival Process")) {
                     // Run this section if request is to retrieve previous calculations
-                    // init fresh StoreList
-                    StoreList clientProcessing = new StoreList();
                     // Retrieve all previous calculations as ArrayList
                     clientProcessing.getList();
                     // Send this information as object back to client
                     out.writeObject(clientProcessing);
                 }
-
-                // Decleare Input File Location
-                FileReader inputFileReader = new FileReader("input.csv");
-                // Input Retrieving Process
-                BufferedReader fileInput = new BufferedReader(inputFileReader);
-
-                // Close File Reading Process
-                fileInput.close();
 
                 // Close Connection with Client
                 connectionSocket.close();
