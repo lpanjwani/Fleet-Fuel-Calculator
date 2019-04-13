@@ -68,6 +68,9 @@ public class ProjectServer implements Runnable {
             // Read Objects from Clients
             CalculationRequest clientInput = (CalculationRequest) this.in.readObject();
 
+            // init fresh StoreList
+            StoreList clientProcessing = new StoreList(this.connectionSocket.getInetAddress().toString().substring(1));
+
             // Get Header from Client Recieved Object
             if (clientInput.getHeader().equals("Calculation Required")) {
                 // Run this section if request is to calculate
@@ -89,14 +92,11 @@ public class ProjectServer implements Runnable {
                     }
                 }
 
-                StoreList clientProcessing = new StoreList();
                 clientProcessing.saveList(clientInput);
                 this.out.writeObject(clientInput);
             } // Check if it a Calculation Retrieval Request 
             else if (clientInput.getHeader().equals("Retreival Process")) {
                 // Run this section if request is to retrieve previous calculations
-                // init fresh StoreList
-                StoreList clientProcessing = new StoreList();
                 // Retrieve all previous calculations as ArrayList
                 clientProcessing.getList();
                 // Send this information as object back to client

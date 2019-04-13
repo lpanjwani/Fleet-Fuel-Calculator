@@ -18,13 +18,14 @@ public class StoreList extends CalculationRequest {
     // Defines ArrayList Type & Name
     ArrayList<CalculationRequest> storeArray;
     // Data Store File Location
-    private static final String DATA_STORE = "calculationDB.dat";
+    private static String DATA_STORE;
 //    private static final long serialVersionUID = 6529685098267757690L;
 
     // init new Store ArrayList
-    public StoreList() throws IOException, FileNotFoundException, ClassNotFoundException {
+    public StoreList(String storeFileName) throws IOException, FileNotFoundException, ClassNotFoundException {
         // clear all exisiting Information to avoid any problems
         this.storeArray = new ArrayList<CalculationRequest>();
+        this.DATA_STORE = storeFileName + "_DB.dat";
     }
 
     // Retrives ArrayList Containing All Calculations from Data Store
