@@ -19,7 +19,6 @@ public class StoreList extends CalculationRequest {
     ArrayList<CalculationRequest> storeArray;
     // Data Store File Location
     private static String DATA_STORE;
-//    private static final long serialVersionUID = 6529685098267757690L;
 
     // init new Store ArrayList
     public StoreList(String storeFileName) throws IOException, FileNotFoundException, ClassNotFoundException {

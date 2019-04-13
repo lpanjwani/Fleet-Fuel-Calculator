@@ -96,8 +96,13 @@ public class ProjectServer implements Runnable {
                         clientInput.calculateCost(Double.parseDouble(rowValues[1]));
                     }
                 }
+
+                // Close File Reading Process
+                fileInput.close();
+
                 // Save Information in File Storage
                 clientProcessing.saveList(clientInput);
+                
                 // Send Back Information to Client
                 this.out.writeObject(clientInput);
             } // Check if it a Calculation Retrieval Request 
@@ -113,14 +118,6 @@ public class ProjectServer implements Runnable {
                 // Send this information as object back to client
                 this.out.writeObject(clientProcessing);
             }
-
-            // Decleare Input File Location
-            FileReader inputFileReader = new FileReader("input.csv");
-            // Input Retrieving Process
-            BufferedReader fileInput = new BufferedReader(inputFileReader);
-
-            // Close File Reading Process
-            fileInput.close();
 
             // Close Connection with Client
             this.connectionSocket.close();
