@@ -281,8 +281,10 @@ public class ProjectClient extends Application {
                     ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
                     ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 
+                    // Tell Server that this a Retrieval Process
                     CalculationRequest values = new CalculationRequest("Retreival Process");
 
+                    // Send Server all the information
                     out.writeObject(values);
 
                     // Wait to Recieve Response from Server
@@ -290,16 +292,32 @@ public class ProjectClient extends Application {
 
                     // Results Display Text
                     String display = response.showList();
-                    
 
-                    // Adds New Result in 'Results' TextField with 2 Decimal Points Rounding.
-                    Results.setText(display);
+                    // Check if no calculations exist
+                    if (display.equals("")) {
+                        // Show Information to User that No Calculations Exist
+                        display = "Dear User, No Calculations are stored on the server! Please calculate first!";
 
-                    // Optional AlertBox for Results
-                    Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION, display);
+                        // Adds New Result in 'Results' TextField with 2 Decimal Points Rounding.
+                        Results.setText(display);
 
-                    // Show Response to User & Await Dismissal
-                    calulcatedResponse.showAndWait();
+                        // Optional AlertBox for Results
+                        Alert calulcatedResponse = new Alert(AlertType.INFORMATION, display);
+
+                        // Show Response to User & Await Dismissal
+                        calulcatedResponse.showAndWait();
+
+                    } else {
+
+                        // Adds New Result in 'Results' TextField with 2 Decimal Points Rounding.
+                        Results.setText(display);
+
+                        // Optional AlertBox for Results
+                        Alert calulcatedResponse = new Alert(AlertType.CONFIRMATION, display);
+
+                        // Show Response to User & Await Dismissal
+                        calulcatedResponse.showAndWait();
+                    }
                 } catch (IOException ex) {
                     // This section is excuted when there is a Input Output Exception
 

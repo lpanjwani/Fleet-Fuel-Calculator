@@ -19,8 +19,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ProjectServer implements Runnable {
 
@@ -28,15 +26,20 @@ public class ProjectServer implements Runnable {
     ObjectInputStream in;
     ObjectOutputStream out;
 
+    // Constructor that sets information rquired by Thread
     public ProjectServer(Socket connectionSocket, ObjectInputStream in, ObjectOutputStream out) {
         this.connectionSocket = connectionSocket;
         this.in = in;
         this.out = out;
     }
 
+    // Runs when Server is in Booting Process
     public static void main(String[] args) {
         // Define Server Port
         final int Port = 6000;
+
+        // Show Admin that Server is up & Running
+        System.out.println("Server Started!");
 
         try {
             // ServerSocket is used for purpose of waiting for a connection from a client
@@ -53,13 +56,14 @@ public class ProjectServer implements Runnable {
                 ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
                 ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
 
+                // Start New Thread to service this user
                 new Thread(new ProjectServer(connectionSocket, in, out)).start();
             }
         } // Handle Input Output Exception
         catch (IOException ex) {
             // Print Exception Text For Admin
             System.out.println("Dear Admin, Other Process are Running in Background. Please close them." + ex);
-        } // Handle ClassNotFound Exception
+        }
     }
 
     @Override
@@ -79,6 +83,7 @@ public class ProjectServer implements Runnable {
                 // Input Retrieving Process
                 BufferedReader fileInput = new BufferedReader(inputFileReader);
 
+                // init Clean String
                 String line;
 
                 // While Loop to Gets Each Line
@@ -91,14 +96,20 @@ public class ProjectServer implements Runnable {
                         clientInput.calculateCost(Double.parseDouble(rowValues[1]));
                     }
                 }
-
+                // Save Information in File Storage
                 clientProcessing.saveList(clientInput);
+                // Send Back Information to Client
                 this.out.writeObject(clientInput);
             } // Check if it a Calculation Retrieval Request 
             else if (clientInput.getHeader().equals("Retreival Process")) {
                 // Run this section if request is to retrieve previous calculations
                 // Retrieve all previous calculations as ArrayList
-                clientProcessing.getList();
+                try {
+                    clientProcessing.getList();
+                } // Handle FileNotFound Expections
+                catch (FileNotFoundException ex) {
+                    // Do Nothing
+                }
                 // Send this information as object back to client
                 this.out.writeObject(clientProcessing);
             }
@@ -113,12 +124,14 @@ public class ProjectServer implements Runnable {
 
             // Close Connection with Client
             this.connectionSocket.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ProjectServer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(ProjectServer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ProjectServer.class.getName()).log(Level.SEVERE, null, ex);
+        } // Handle Input Output Exception
+        catch (IOException ex) {
+            // Print Exception Text For Admin
+            System.out.println("Dear Admin, Other Process are Running in Background. Please close them." + ex);
+        } // Handle ClassNotFound Exception 
+        catch (ClassNotFoundException ex) {
+            // Print Exception Text For Admin
+            System.out.println("Dear Admin, Class is not found" + ex);
         }
     }
 }
