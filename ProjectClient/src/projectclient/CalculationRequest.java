@@ -42,7 +42,7 @@ public class CalculationRequest implements Serializable {
         this.litterPrice = fuelCost;
 
         // Mathematical Formula to Calulcate Cost of Trip
-        this.tripCost = (this.distance / (this.efficiency * * 3.78541)) * this.litterPrice;
+        this.tripCost = (this.distance / (this.efficiency * 3.78541)) * this.litterPrice;
 
         // Check for Arithmetic Exceptions such as Division by 0, etc
         if (Double.isInfinite(this.tripCost) || Double.isNaN(this.tripCost) || this.tripCost < 0) {
