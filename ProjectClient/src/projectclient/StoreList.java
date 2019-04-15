@@ -71,7 +71,7 @@ public class StoreList extends CalculationRequest {
         // Loop runs Dynamically based on how many Requests are stored in file
         for (CalculationRequest cal : this.storeArray) {
             // Add Calculation Information for Display
-            stringContent += cal.toString();
+            stringContent += cal.toString() + "\n";
         }
         // Respond with all Calculation Information
         return stringContent;
