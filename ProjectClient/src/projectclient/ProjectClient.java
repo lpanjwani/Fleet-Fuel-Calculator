@@ -200,7 +200,7 @@ public class ProjectClient extends Application {
 
                     // Results Display Text
                     String display = "Trip Distance: " + distanceInput.getText() + " Miles \n"
-                            + "Car’s fuel efficiency: " + fuelEffieciencyInput.getText() + " MPG \n"
+                            + "Car’s fuel efficiency: " + fuelEffieciencyInput.getText() + " MPL \n"
                             + "Cost of fuel per litter: £" + response.getLitterPrice() + "\n"
                             + "Fuel Cost: £" + (String.format("%.2f", response.getCost()));
 
