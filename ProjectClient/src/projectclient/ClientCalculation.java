@@ -53,7 +53,7 @@ public class ClientCalculation {
         this.distance = distance;
 
         // Sets Efficiency, based recieved values from parameter
-        this.efficiency = efficiency * 3.78541;
+        this.efficiency = efficiency;
 
         // Automatically Calculates Costs
         calculateCost();
@@ -62,7 +62,7 @@ public class ClientCalculation {
     // Calculates Cost of Trip
     private void calculateCost() throws IOException {
         // Mathematical Formula to Calulcate Cost of Trip
-        this.tripCost = (this.distance / this.efficiency) * this.litterPrice;
+        this.tripCost = (this.distance / (this.efficiency * 3.78541)) * this.litterPrice;
 
         // Check for Arithmetic Exceptions such as Division by 0, etc
         if (Double.isInfinite(this.tripCost) || Double.isNaN(this.tripCost) || this.tripCost < 0) {
